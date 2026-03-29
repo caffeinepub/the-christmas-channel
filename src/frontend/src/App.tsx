@@ -10,10 +10,55 @@ import WeatherForecast from "./components/WeatherForecast";
 import { useInternetIdentity } from "./hooks/useInternetIdentity";
 import { useIsAdmin } from "./hooks/useQueries";
 
+const listenPlatforms = [
+  {
+    name: "Live365",
+    url: "https://live365.com",
+    icon: "📻",
+    desc: "Stream on Live365",
+    accentColor: "rgba(220,80,60,0.25)",
+    borderColor: "rgba(220,100,80,0.45)",
+  },
+  {
+    name: "RadioLine",
+    url: "https://www.radioline.co",
+    icon: "🎙️",
+    desc: "Listen on RadioLine",
+    accentColor: "rgba(60,100,220,0.22)",
+    borderColor: "rgba(80,130,240,0.45)",
+  },
+  {
+    name: "Online Radio Box",
+    url: "https://onlineradiobox.com",
+    icon: "📡",
+    desc: "OnlineRadioBox",
+    accentColor: "rgba(40,160,100,0.2)",
+    borderColor: "rgba(70,200,130,0.4)",
+  },
+  {
+    name: "GetMeRadio",
+    url: "https://getmeradio.com",
+    icon: "🎧",
+    desc: "GetMeRadio.com",
+    accentColor: "rgba(160,70,200,0.2)",
+    borderColor: "rgba(190,100,230,0.4)",
+  },
+  {
+    name: "Our Website",
+    url: "#",
+    icon: "🌐",
+    desc: "christmaschannelradio.com",
+    accentColor: "rgba(253,200,50,0.15)",
+    borderColor: "rgba(253,230,138,0.45)",
+    sameTab: true,
+  },
+];
+
 export default function App() {
   const { login, clear, loginStatus, identity } = useInternetIdentity();
   const { data: isAdmin } = useIsAdmin();
   const [showAdmin, setShowAdmin] = useState(false);
+  const [hoveredPlatform, setHoveredPlatform] = useState<string | null>(null);
 
   const isLoggedIn = loginStatus === "success" && !!identity;
 
@@ -256,6 +301,140 @@ export default function App() {
         </section>
 
         <OnAirNow />
+
+        {/* Ways to Listen */}
+        <section
+          data-ocid="listen.section"
+          style={{
+            padding: "2.5rem 1rem",
+            borderTop: "1px solid rgba(253,230,138,0.12)",
+            background:
+              "linear-gradient(180deg, rgba(5,10,20,0.6) 0%, rgba(8,15,30,0.8) 100%)",
+          }}
+        >
+          <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+            <h2
+              style={{
+                fontFamily: "'Mountains of Christmas', serif",
+                fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
+                fontWeight: 700,
+                color: "#fde68a",
+                textAlign: "center",
+                marginBottom: "0.4rem",
+                letterSpacing: "0.02em",
+              }}
+            >
+              🎧 Ways to Listen
+            </h2>
+            <p
+              style={{
+                textAlign: "center",
+                color: "rgba(180,210,240,0.65)",
+                fontSize: "0.95rem",
+                marginBottom: "2rem",
+                fontStyle: "italic",
+              }}
+            >
+              Tune in from your favorite platform
+            </p>
+
+            {/* Live365 Player Embed */}
+            <div
+              style={{
+                margin: "0 auto 2rem auto",
+                maxWidth: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <iframe
+                width="450"
+                height="316"
+                frameBorder="0"
+                src="https://live365.com/embeds/v1/player/a76054?s=md&m=dark&c=mp3"
+                title="Live365 Player"
+                allowFullScreen
+                style={{ maxWidth: "100%", display: "block" }}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "1rem",
+                justifyContent: "center",
+              }}
+            >
+              {listenPlatforms.map((platform) => (
+                <a
+                  key={platform.name}
+                  href={platform.url}
+                  target={platform.sameTab ? "_self" : "_blank"}
+                  rel={platform.sameTab ? undefined : "noreferrer noopener"}
+                  data-ocid={`listen.${platform.name.toLowerCase().replace(/\s+/g, "_")}.link`}
+                  onMouseEnter={() => setHoveredPlatform(platform.name)}
+                  onMouseLeave={() => setHoveredPlatform(null)}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    padding: "1.2rem 1.5rem",
+                    minWidth: "130px",
+                    background:
+                      hoveredPlatform === platform.name
+                        ? platform.accentColor
+                        : "rgba(10,20,40,0.7)",
+                    border: `1px solid ${hoveredPlatform === platform.name ? platform.borderColor : "rgba(60,90,140,0.35)"}`,
+                    borderRadius: "0.75rem",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                    transition:
+                      "background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease",
+                    transform:
+                      hoveredPlatform === platform.name
+                        ? "translateY(-3px) scale(1.03)"
+                        : "translateY(0) scale(1)",
+                    boxShadow:
+                      hoveredPlatform === platform.name
+                        ? `0 8px 24px ${platform.accentColor}`
+                        : "0 2px 8px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <span style={{ fontSize: "2rem", lineHeight: 1 }}>
+                    {platform.icon}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Mountains of Christmas', serif",
+                      fontSize: "1rem",
+                      fontWeight: 700,
+                      color:
+                        hoveredPlatform === platform.name
+                          ? "#fde68a"
+                          : "#93c5fd",
+                      transition: "color 0.2s ease",
+                      textAlign: "center",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {platform.name}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "rgba(180,200,230,0.55)",
+                      textAlign: "center",
+                    }}
+                  >
+                    {platform.desc}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <div
           style={{
