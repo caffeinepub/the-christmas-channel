@@ -436,6 +436,61 @@ export default function App() {
           </div>
         </section>
 
+        {/* Recently Played */}
+        <section
+          data-ocid="recently-played.section"
+          style={{
+            padding: "2.5rem 1rem",
+            borderTop: "1px solid rgba(253,230,138,0.12)",
+            background:
+              "linear-gradient(180deg, rgba(8,15,30,0.8) 0%, rgba(5,10,20,0.6) 100%)",
+          }}
+        >
+          <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+            <h2
+              style={{
+                fontFamily: "'Mountains of Christmas', serif",
+                fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
+                fontWeight: 700,
+                color: "#fde68a",
+                textAlign: "center",
+                marginBottom: "0.4rem",
+                letterSpacing: "0.02em",
+              }}
+            >
+              🎵 Recently Played
+            </h2>
+            <p
+              style={{
+                textAlign: "center",
+                color: "rgba(180,210,240,0.65)",
+                fontSize: "0.95rem",
+                marginBottom: "2rem",
+                fontStyle: "italic",
+              }}
+            >
+              The latest tracks we've played on The Christmas Channel
+            </p>
+            <div
+              style={{
+                margin: "0 auto",
+                maxWidth: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <iframe
+                width="450"
+                height="511"
+                frameBorder="0"
+                src="https://live365.com/embeds/v1/played/a76054?s=md&m=dark"
+                title="Recently Played"
+                style={{ maxWidth: "100%", display: "block" }}
+              />
+            </div>
+          </div>
+        </section>
+
         <div
           style={{
             borderTop: "1px solid rgba(253,230,138,0.1)",
