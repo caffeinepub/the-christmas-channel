@@ -127,6 +127,7 @@ export interface backendInterface {
     removeDJ(djId: bigint): Promise<void>;
     removeShow(id: bigint): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    updateShow(id: bigint, show: Show): Promise<void>;
 }
 import type { Show as _Show, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -338,6 +339,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
+    async updateShow(arg0: bigint, arg1: Show): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateShow(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateShow(arg0, arg1);
             return result;
         }
     }

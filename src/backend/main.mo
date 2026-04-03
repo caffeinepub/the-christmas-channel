@@ -7,9 +7,9 @@ import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+import { migration } "DJMigration";
 
-
-
+(with migration)
 actor {
   type Show = {
     showName : Text;
@@ -25,6 +25,7 @@ actor {
     name : Text;
     bio : Text;
     specialty : Text;
+    photoUrl : Text;
   };
 
   type UserProfile = {
@@ -80,6 +81,16 @@ actor {
     storeShowInternal(show);
   };
 
+  public shared ({ caller }) func updateShow(id : Nat, show : Show) : async () {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can update shows");
+    };
+    if (not showMap.containsKey(id.toText())) {
+      Runtime.trap("Show not found");
+    };
+    showMap.add(id.toText(), show);
+  };
+
   public shared ({ caller }) func removeShow(id : Nat) : async () {
     if (not AccessControl.isAdmin(accessControlState, caller)) {
       Runtime.trap("Unauthorized: Only admins can remove shows");
@@ -126,7 +137,7 @@ actor {
     djMap.values().toArray();
   };
 
-  public shared ({ caller }) func addDJ(name : Text, bio : Text, specialty : Text) : async Nat {
+  public shared ({ caller }) func addDJ(name : Text, bio : Text, specialty : Text, photoUrl : Text) : async Nat {
     if (not AccessControl.isAdmin(accessControlState, caller)) {
       Runtime.trap("Unauthorized: Only admins can add DJs");
     };
@@ -136,6 +147,7 @@ actor {
       name;
       bio;
       specialty;
+      photoUrl;
     };
     djMap.add(id, newDJ);
     nextDjId += 1;

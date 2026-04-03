@@ -15,6 +15,7 @@ export interface DJ {
   'bio' : string,
   'name' : string,
   'specialty' : string,
+  'photoUrl' : string,
 }
 export interface Show {
   'endHour' : bigint,
@@ -30,7 +31,7 @@ export type UserRole = { 'admin' : null } |
   { 'guest' : null };
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'addDJ' : ActorMethod<[string, string, string], bigint>,
+  'addDJ' : ActorMethod<[string, string, string, string], bigint>,
   'addShow' : ActorMethod<[Show], bigint>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'getAllShows' : ActorMethod<[], Array<Show>>,
@@ -44,6 +45,7 @@ export interface _SERVICE {
   'removeDJ' : ActorMethod<[bigint], undefined>,
   'removeShow' : ActorMethod<[bigint], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'updateShow' : ActorMethod<[bigint, Show], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

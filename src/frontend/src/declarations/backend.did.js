@@ -27,11 +27,12 @@ export const DJ = IDL.Record({
   'bio' : IDL.Text,
   'name' : IDL.Text,
   'specialty' : IDL.Text,
+  'photoUrl' : IDL.Text,
 });
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-  'addDJ' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Nat], []),
+  'addDJ' : IDL.Func([IDL.Text, IDL.Text, IDL.Text, IDL.Text], [IDL.Nat], []),
   'addShow' : IDL.Func([Show], [IDL.Nat], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'getAllShows' : IDL.Func([], [IDL.Vec(Show)], ['query']),
@@ -49,6 +50,7 @@ export const idlService = IDL.Service({
   'removeDJ' : IDL.Func([IDL.Nat], [], []),
   'removeShow' : IDL.Func([IDL.Nat], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'updateShow' : IDL.Func([IDL.Nat, Show], [], []),
 });
 
 export const idlInitArgs = [];
@@ -73,11 +75,12 @@ export const idlFactory = ({ IDL }) => {
     'bio' : IDL.Text,
     'name' : IDL.Text,
     'specialty' : IDL.Text,
+    'photoUrl' : IDL.Text,
   });
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-    'addDJ' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Nat], []),
+    'addDJ' : IDL.Func([IDL.Text, IDL.Text, IDL.Text, IDL.Text], [IDL.Nat], []),
     'addShow' : IDL.Func([Show], [IDL.Nat], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'getAllShows' : IDL.Func([], [IDL.Vec(Show)], ['query']),
@@ -95,6 +98,7 @@ export const idlFactory = ({ IDL }) => {
     'removeDJ' : IDL.Func([IDL.Nat], [], []),
     'removeShow' : IDL.Func([IDL.Nat], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'updateShow' : IDL.Func([IDL.Nat, Show], [], []),
   });
 };
 

@@ -12,6 +12,7 @@ export interface DJ {
     bio: string;
     name: string;
     specialty: string;
+    photoUrl: string;
 }
 export interface UserProfile {
     name: string;
@@ -30,7 +31,7 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addDJ(name: string, bio: string, specialty: string): Promise<bigint>;
+    addDJ(name: string, bio: string, specialty: string, photoUrl: string): Promise<bigint>;
     addShow(show: Show): Promise<bigint>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     clearAllShows(): Promise<void>;
@@ -45,4 +46,5 @@ export interface backendInterface {
     removeDJ(djId: bigint): Promise<void>;
     removeShow(id: bigint): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    updateShow(id: bigint, show: Show): Promise<void>;
 }

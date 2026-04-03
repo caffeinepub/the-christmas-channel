@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
 import AdminPanel from "./components/AdminPanel";
@@ -8,7 +9,7 @@ import Schedule from "./components/Schedule";
 import Snowflakes from "./components/Snowflakes";
 import WeatherForecast from "./components/WeatherForecast";
 import { useInternetIdentity } from "./hooks/useInternetIdentity";
-import { useIsAdmin } from "./hooks/useQueries";
+import { useDJs, useIsAdmin } from "./hooks/useQueries";
 
 const listenPlatforms = [
   {
@@ -53,6 +54,170 @@ const listenPlatforms = [
     sameTab: true,
   },
 ];
+
+function DJBiosSection() {
+  const { data: djs = [] } = useDJs();
+
+  if (djs.length === 0) return null;
+
+  return (
+    <section
+      data-ocid="djs.section"
+      style={{
+        padding: "2.5rem 1rem",
+        borderTop: "1px solid rgba(253,230,138,0.12)",
+        background:
+          "linear-gradient(180deg, rgba(8,15,30,0.85) 0%, rgba(10,18,35,0.9) 100%)",
+      }}
+    >
+      <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+        <h2
+          style={{
+            fontFamily: "'Mountains of Christmas', serif",
+            fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
+            fontWeight: 700,
+            color: "#fde68a",
+            textAlign: "center",
+            marginBottom: "0.4rem",
+            letterSpacing: "0.02em",
+          }}
+        >
+          🎙️ Meet Our DJs
+        </h2>
+        <p
+          style={{
+            textAlign: "center",
+            color: "rgba(180,210,240,0.65)",
+            fontSize: "0.95rem",
+            marginBottom: "2rem",
+            fontStyle: "italic",
+          }}
+        >
+          The voices behind The Christmas Channel
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: "1.25rem",
+          }}
+        >
+          {djs.map((dj, i) => (
+            <div
+              key={String(dj.id)}
+              data-ocid={`djs.item.${i + 1}`}
+              style={{
+                background: "rgba(15,25,40,0.92)",
+                border: "1px solid rgba(80,120,180,0.3)",
+                borderRadius: "1rem",
+                padding: "1.5rem",
+                backdropFilter: "blur(10px)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                gap: "0.75rem",
+                transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.borderColor =
+                  "rgba(253,230,138,0.35)";
+                (e.currentTarget as HTMLDivElement).style.boxShadow =
+                  "0 8px 32px rgba(0,0,0,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.borderColor =
+                  "rgba(80,120,180,0.3)";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+              }}
+            >
+              {/* DJ Photo or placeholder */}
+              {dj.photoUrl ? (
+                <img
+                  src={dj.photoUrl}
+                  alt={`${dj.name}`}
+                  style={{
+                    width: "96px",
+                    height: "96px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "3px solid rgba(253,230,138,0.4)",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.5)",
+                    flexShrink: 0,
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "96px",
+                    height: "96px",
+                    borderRadius: "50%",
+                    background:
+                      "radial-gradient(circle at 35% 35%, rgba(80,120,200,0.4), rgba(10,20,40,0.9))",
+                    border: "3px solid rgba(80,120,180,0.4)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "2.5rem",
+                    flexShrink: 0,
+                  }}
+                >
+                  🎧
+                </div>
+              )}
+
+              {/* DJ Name */}
+              <div>
+                <h3
+                  style={{
+                    fontFamily: "'Mountains of Christmas', serif",
+                    fontSize: "1.2rem",
+                    fontWeight: 700,
+                    color: "#e2e8f0",
+                    margin: 0,
+                    marginBottom: "0.4rem",
+                  }}
+                >
+                  {dj.name}
+                </h3>
+
+                {/* Specialty badge */}
+                {dj.specialty && (
+                  <Badge
+                    style={{
+                      background: "rgba(124,58,237,0.3)",
+                      color: "#c4b5fd",
+                      border: "1px solid rgba(124,58,237,0.5)",
+                      fontSize: "0.7rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    {dj.specialty}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Bio */}
+              {dj.bio && (
+                <p
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "rgba(180,210,240,0.75)",
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}
+                >
+                  {dj.bio}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function App() {
   const { login, clear, loginStatus, identity } = useInternetIdentity();
@@ -386,7 +551,11 @@ export default function App() {
                       hoveredPlatform === platform.name
                         ? platform.accentColor
                         : "rgba(10,20,40,0.7)",
-                    border: `1px solid ${hoveredPlatform === platform.name ? platform.borderColor : "rgba(60,90,140,0.35)"}`,
+                    border: `1px solid ${
+                      hoveredPlatform === platform.name
+                        ? platform.borderColor
+                        : "rgba(60,90,140,0.35)"
+                    }`,
                     borderRadius: "0.75rem",
                     textDecoration: "none",
                     cursor: "pointer",
@@ -469,7 +638,7 @@ export default function App() {
                 fontStyle: "italic",
               }}
             >
-              The latest tracks we've played on The Christmas Channel
+              The latest tracks we&apos;ve played on The Christmas Channel
             </p>
             <div
               style={{
@@ -490,6 +659,9 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {/* Meet Our DJs */}
+        <DJBiosSection />
 
         <div
           style={{
