@@ -1,4 +1,4 @@
-import { useCurrentShow } from "../hooks/useQueries";
+import { useCurrentShow, useHourlyShowRefresh } from "../hooks/useQueries";
 
 const DAY_NAMES = [
   "Sunday",
@@ -20,6 +20,8 @@ function formatHour(h: bigint): string {
 
 export default function OnAirNow() {
   const { data: show, isLoading } = useCurrentShow();
+  // Invalidates and refetches the current show exactly at the top of each hour
+  useHourlyShowRefresh();
 
   return (
     <section

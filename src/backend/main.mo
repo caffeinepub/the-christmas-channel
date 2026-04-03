@@ -110,10 +110,13 @@ actor {
 
   public query ({ caller }) func getCurrentShow() : async ?Show {
     let icTime = Time.now();
-    let cstTime = icTime - 6 * 3600 * 1000000000;
-    let cstDate = cstTime / (24 * 3600 * 1000000000);
-    let cstDayOfWeek = cstDate % 7;
-    let cstHour = (cstTime / (3600 * 1000000000)) % 24;
+    // Subtract 6 hours to convert UTC to CST
+    let cstTime = icTime - 6 * 3600 * 1_000_000_000;
+    // Number of whole days since Unix epoch (Jan 1 1970 = Thursday)
+    let cstDays = cstTime / (24 * 3600 * 1_000_000_000);
+    // +4 offset so that epoch day 0 (Thursday) maps to 4 in 0=Sunday scheme
+    let cstDayOfWeek = (cstDays + 4) % 7;
+    let cstHour = (cstTime / (3600 * 1_000_000_000)) % 24;
 
     showMap.values().find(
       func(show) {

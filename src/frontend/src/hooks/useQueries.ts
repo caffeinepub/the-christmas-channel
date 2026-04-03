@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import type { DJ as DJExtended, Show } from "../backend.d";
 import { useActor } from "./useActor";
 
@@ -15,41 +15,38 @@ function msUntilNextHour(): number {
 }
 
 /**
- * Returns a value that increments every hour on the hour.
- * Used as a query key so React Query re-fetches exactly at the top of each hour.
+ * Schedules an invalidation of the "currentShow" query exactly at the top
+ * of each hour, then re-schedules itself for the next hour.
  */
-export function useHourTick(): number {
-  const [tick, setTick] = useState(() => new Date().getHours());
+export function useHourlyShowRefresh() {
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
     function scheduleNext() {
       timeoutId = setTimeout(() => {
-        setTick(new Date().getHours());
+        queryClient.invalidateQueries({ queryKey: ["currentShow"] });
         scheduleNext();
       }, msUntilNextHour());
     }
 
     scheduleNext();
     return () => clearTimeout(timeoutId);
-  }, []);
-
-  return tick;
+  }, [queryClient]);
 }
 
 export function useCurrentShow() {
   const { actor, isFetching } = useActor();
-  const hourTick = useHourTick();
   return useQuery<Show | null>({
-    queryKey: ["currentShow", hourTick],
+    queryKey: ["currentShow"],
     queryFn: async () => {
       if (!actor) return null;
       return actor.getCurrentShow();
     },
     enabled: !!actor && !isFetching,
-    // Stale after 1 hour; refetch at the next top-of-hour via queryKey change.
-    staleTime: 60 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: false,
   });
 }
 
